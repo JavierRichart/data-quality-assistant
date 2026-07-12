@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+
+.streamlit/
+
+reports/*
+!reports/.gitkeep
+
+data/*
+!data/.gitkeep
