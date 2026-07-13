@@ -1,6 +1,6 @@
-import pandas as pd
 import streamlit as st
 from src.loader import load_file
+from src.validators import validate_required_columns
 
 
 st.set_page_config(
@@ -22,6 +22,23 @@ if uploaded_file is not None:
         df = load_file(uploaded_file)
 
         st.success("Archivo cargado correctamente")
+
+        required_columns = ["nombre", "ciudad", "edad"]
+
+        missing_columns  = validate_required_columns(
+            df,
+            required_columns,
+        )
+
+        st.subheader("Validación de columnas")
+
+        if missing_columns:
+            st.error(
+                f"Falta columnas: {', '.join(missing_columns)}"
+            )
+        else:
+            st.success("Columnas correctas")
+
 
         st.subheader("Resumen")
         col1, col2 = st.columns(2)
