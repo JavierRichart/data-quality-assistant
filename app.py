@@ -1,6 +1,7 @@
 import streamlit as st
 from src.loader import load_file
 from src.validators import validate_required_columns
+from src.normalizer import normalize_columns
 
 
 st.set_page_config(
@@ -10,7 +11,7 @@ st.set_page_config(
 )
 
 st.title("Data Quality Assistant")
-st.write("Sub un archivo Excel/CSV para analizar")
+st.write("Sube un archivo Excel/CSV para analizar")
 
 uploaded_file = st.file_uploader(
     "Selecciona un archivo",
@@ -20,6 +21,7 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
     try:
         df = load_file(uploaded_file)
+        df = normalize_columns(df)
 
         st.success("Archivo cargado correctamente")
 
@@ -34,7 +36,7 @@ if uploaded_file is not None:
 
         if missing_columns:
             st.error(
-                f"Falta columnas: {', '.join(missing_columns)}"
+                f"Faltan columnas: {', '.join(missing_columns)}"
             )
         else:
             st.success("Columnas correctas")
