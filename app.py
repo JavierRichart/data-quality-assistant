@@ -1,6 +1,9 @@
 import streamlit as st
 from src.loader import load_file
-from src.validators import validate_required_columns
+from src.validators import (
+    validate_required_columns, 
+    find_duplicate_columns
+    )
 from src.normalizer import normalize_columns
 
 
@@ -22,6 +25,7 @@ if uploaded_file is not None:
     try:
         df = load_file(uploaded_file)
         df = normalize_columns(df)
+        duplicate_columns = find_duplicate_columns(df)
 
         st.success("Archivo cargado correctamente")
 
@@ -34,14 +38,23 @@ if uploaded_file is not None:
 
         st.subheader("Validación de columnas")
 
+        if duplicate_columns:
+            st.error(
+                f"Hay columnas duplicadas después de normalizar: "
+                f"{', '.join(duplicate_columns)}"
+            )
+            st.stop()
+
         if missing_columns:
             st.error(
                 f"Faltan columnas: {', '.join(missing_columns)}"
             )
+
         else:
-            st.success("Columnas correctas")
-
-
+            st.success(
+                "Todas las columnas obligatorias están presentes "
+                "y no hay duplicados."
+            )
         st.subheader("Resumen")
         col1, col2 = st.columns(2)
 
