@@ -12,3 +12,7 @@ def validate_required_columns(df, required_columns):
 def find_duplicate_columns(df):
     duplicated = df.columns[df.columns.duplicated()].tolist()
     return duplicated
+
+
+def find_null_values(df):
+    return df.isnull().sum().to_dict()

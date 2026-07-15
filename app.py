@@ -25,6 +25,12 @@ if uploaded_file is not None:
         df = report.dataframe
         duplicate_columns = report.duplicate_columns
         missing_columns = report.missing_columns
+        null_values = {
+            column: count
+            for column, count in report.null_values.items()
+            if count > 0
+        }
+
         st.success("Archivo cargado correctamente")
 
         st.subheader("Validación de columnas")
@@ -46,6 +52,14 @@ if uploaded_file is not None:
                 "Todas las columnas obligatorias están presentes "
                 "y no hay duplicados."
             )
+
+        if null_values:
+            st.warning("Se han detectado valores vacíos:")
+
+            for column, count in null_values.items():
+                st.write(f"- {column}: {count}")
+
+                
         st.subheader("Resumen")
         col1, col2, col3 = st.columns(3)
 
