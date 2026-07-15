@@ -5,8 +5,8 @@ import pandas as pd
 from src.normalizer import normalize_columns
 from src.validators import (
     RequiredColumnsValidator,
-    find_duplicate_columns,
-    find_null_values
+    DuplicateColumnsValidator,
+    NullValuesValidator,
 )
 
 @dataclass
@@ -47,12 +47,18 @@ def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
     required_columns_validator = RequiredColumnsValidator(
         ["nombre", "ciudad", "edad",]
     )
+    duplicate_columns_validator = DuplicateColumnsValidator()
+    null_values_validator = NullValuesValidator()
 
     return AnalysisReport(
         dataframe=normalized_df,
-        duplicate_columns=find_duplicate_columns(normalized_df),
-        missing_columns= required_columns_validator.validate(
+        duplicate_columns=duplicate_columns_validator.validate(
             normalized_df
         ),
-        null_values=find_null_values(normalized_df)
+        missing_columns=required_columns_validator.validate(
+            normalized_df
+        ),
+        null_values=null_values_validator.validate(
+            normalized_df
+        ),
     )
