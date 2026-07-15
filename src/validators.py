@@ -1,12 +1,20 @@
+import pandas as pd
 
-def validate_required_columns(df, required_columns):
-    missing_columns = [
-        column
-        for column in required_columns
-        if column not in df.columns
-    ]
+from src.base_validator import BaseValidator
 
-    return missing_columns
+class RequiredColumnsValidator(BaseValidator):
+    def __init__(self, required_columns: list[str]):
+        self.required_columns = required_columns
+
+
+    def validate_required_columns(df, required_columns):
+        missing_columns = [
+            column
+            for column in required_columns
+            if column not in df.columns
+        ]
+
+        return missing_columns
 
 
 def find_duplicate_columns(df):

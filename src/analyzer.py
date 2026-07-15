@@ -4,8 +4,8 @@ import pandas as pd
 
 from src.normalizer import normalize_columns
 from src.validators import (
+    RequiredColumnsValidator,
     find_duplicate_columns,
-    validate_required_columns,
     find_null_values
 )
 
@@ -44,18 +44,15 @@ class AnalysisReport:
 def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
     normalized_df = normalize_columns(df)
 
-    required_columns = [
-        "nombre",
-        "ciudad",
-        "edad",
-    ]
+    required_columns_validator = RequiredColumnsValidator(
+        ["nombre", "ciudad", "edad",]
+    )
 
     return AnalysisReport(
         dataframe=normalized_df,
         duplicate_columns=find_duplicate_columns(normalized_df),
-        missing_columns=validate_required_columns(
-            normalized_df,
-            required_columns
+        missing_columns= required_columns_validator.validate(
+            normalized_df
         ),
         null_values=find_null_values(normalized_df)
     )
