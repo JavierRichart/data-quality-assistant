@@ -22,10 +22,9 @@ if uploaded_file is not None:
         df = load_file(uploaded_file)
         report = analyze_dataframe(df)
         
-        df = report["dataframe"]
-        duplicate_columns = report["duplicate_columns"]
-        missing_columns = report["missing_columns"]
-
+        df = report.dataframe
+        duplicate_columns = report.duplicate_columns
+        missing_columns = report.missing_columns
         st.success("Archivo cargado correctamente")
 
         st.subheader("Validación de columnas")
@@ -42,7 +41,7 @@ if uploaded_file is not None:
                 f"Faltan columnas: {', '.join(missing_columns)}"
             )
 
-        else:
+        if report.is_valid:
             st.success(
                 "Todas las columnas obligatorias están presentes "
                 "y no hay duplicados."
