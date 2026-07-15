@@ -47,10 +47,11 @@ if uploaded_file is not None:
                 "y no hay duplicados."
             )
         st.subheader("Resumen")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
 
-        col1.metric("Filas", len(df))
-        col2.metric("Columnas", len(df.columns))
+        col1.metric("Filas", report.total_rows)
+        col2.metric("Columnas", report.total_columns)
+        col3.metric("Errores", report.error_count)
 
         st.subheader("Vista previa")
         st.dataframe(df.head(20), use_container_width=True)

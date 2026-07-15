@@ -18,6 +18,17 @@ class AnalysisReport:
     def is_valid(self) -> bool:
         return not self.duplicate_columns and not self.missing_columns
     
+    @property
+    def total_rows(self) -> int:
+        return len(self.dataframe)
+    
+    @property
+    def total_columns(self) -> int:
+        return len(self.dataframe.columns)
+    
+    @property
+    def error_count(self) -> int:
+        return len(self.duplicate_columns) + len(self.missing_columns)
 
 def analyze_dataframe(df):
     normalized_df = normalize_columns(df)
