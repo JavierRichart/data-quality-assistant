@@ -26,6 +26,7 @@ if uploaded_file is not None:
         duplicate_columns = report.get_result("duplicate_columns")
         missing_columns = report.get_result("required_columns")
         null_values = report.get_result("null_data")
+        data_types = report.get_result("data_types")
 
         duplicate_details = (
             duplicate_columns.details
@@ -46,6 +47,12 @@ if uploaded_file is not None:
                 if count > 0
             }
             if null_values is not None
+            else {}
+        )
+
+        data_type_details = (
+            data_types.details
+            if data_types is not None
             else {}
         )
 
@@ -72,6 +79,16 @@ if uploaded_file is not None:
 
             for column, count in null_details.items():
                 st.write(f"- {column}: {count}")
+
+
+        if data_type_details:
+            st.warning("Se han detectado tipos de datos incorrectos")
+
+            for column, details in data_type_details.items():
+                st.write(
+                    f"-{column}: se esperaba '{details['expected']}' "
+                    f"y se encontró '{details['found']}'"
+                )
 
         if report.is_valid:
             st.success(
