@@ -31,6 +31,14 @@ class AnalysisReport:
         )
     
 
+    def get_result(self, name: str) -> ValidationResult | None:
+        for result in self.validation_results:
+            if result.name == name:
+                return result
+            
+        return None
+    
+
 def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
     normalized_df = normalize_columns(df)
 
