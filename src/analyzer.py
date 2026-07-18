@@ -8,6 +8,7 @@ from src.validators import (
     RequiredColumnsValidator,
     DuplicateColumnsValidator,
     NullValuesValidator,
+    DataTypesValidator,
 )
 
 @dataclass
@@ -56,6 +57,13 @@ def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
         ),
         DuplicateColumnsValidator(),
         NullValuesValidator(),
+        DataTypesValidator(
+            {
+                "nombre": "text",
+                "ciudad": "text",
+                "edad": "number",
+            }
+        )
     ]
 
     results = [

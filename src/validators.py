@@ -29,14 +29,14 @@ class RequiredColumnsValidator(BaseValidator):
 
 class DuplicateColumnsValidator(BaseValidator):
     def validate(self, dataframe: pd.DataFrame) -> ValidationResult:
-        duplicated = dataframe.columns[
+        duplicate_columns = dataframe.columns[
             dataframe.columns.duplicated()
         ].tolist()
 
         return ValidationResult(
-            name="duplicated_columns",
-            passed=not duplicated,
-            details=duplicated,
+            name="duplicate_columns",
+            passed=not duplicate_columns,
+            details=duplicate_columns,
         )
     
 
@@ -49,3 +49,12 @@ class NullValuesValidator(BaseValidator):
             passed=not any(null_data.values()),
             details=null_data
         )
+    
+
+class DataTypesValidator(BaseValidator):
+    def __init__(self, expected_types: dict[str, str]):
+                 self.expected_types = expected_types
+
+    def validate(self, dataframe: pd.DataFrame) -> ValidationResult:
+        pass
+    
