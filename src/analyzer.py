@@ -30,6 +30,14 @@ class AnalysisReport:
             for result in self.validation_results
         )
     
+    @property
+    def error_count(self) -> int:
+        return sum(
+            1
+            for result in self.validation_results
+            if not result.passed
+        )
+    
 
     def get_result(self, name: str) -> ValidationResult | None:
         for result in self.validation_results:
