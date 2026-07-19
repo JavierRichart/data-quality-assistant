@@ -82,13 +82,42 @@ if uploaded_file is not None:
 
 
         if data_type_details:
-            st.warning("Se han detectado tipos de datos incorrectos")
+            st.error("Se han detectado tipos de datos incorrectos")
 
-            for column, details in data_type_details.items():
+            for column, error_details in data_type_details.items():
+                st.write(f"**Columna:** '{column}'")
                 st.write(
-                    f"-{column}: se esperaba '{details['expected']}' "
-                    f"y se encontró '{details['found']}'"
+                    f"Tipo esperado: '{error_details['expected']}'"
                 )
+
+                if "found" in error_details:
+                    st.write(
+                        f"Tipo detectado por pandas: "
+                        f"{error_details['found']}"
+                    )
+
+                if "invalid_rows" in error_details:
+                    rows = [
+                        row + 2
+                        for row in error_details["invalid_rows"]
+                    ]
+
+                    st.write(
+                        f"Filas del archivo con errores: '{rows}'"
+                    )
+
+                if "invalid_values" in error_details:
+                    st.write(
+                        "Valors incorrectos",
+                        error_details["invalid_values"],
+                    )
+
+                if "error" in error_details:
+                    st.write(
+                        f"Error: {error_details['error']}"
+                    )
+
+                st.divider()
 
         if report.is_valid:
             st.success(
