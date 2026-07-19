@@ -31,7 +31,7 @@ if uploaded_file is not None:
         render_validation_report(report)
 
         st.subheader("Resumen")
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
 
         col1.metric("Filas", report.total_rows)
         col2.metric("Columnas", report.total_columns)
@@ -39,7 +39,11 @@ if uploaded_file is not None:
             "Validaciones fallidas",
             report.error_count,
         )
-
+        col4.metric(
+            "Calidad de los datos",
+            f"{report.quality_score}/100",
+        )
+        
         st.subheader("Vista previa")
         st.dataframe(
             df.head(20),

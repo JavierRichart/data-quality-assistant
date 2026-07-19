@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
+from src.config import VALIDATION_WEIGHTS
 from src.normalizer import normalize_columns
 from src.validation_result import ValidationResult
 from src.validators import (
@@ -11,6 +12,7 @@ from src.validators import (
     DataTypesValidator,
     DateFormatValidator,
 )
+
 
 @dataclass
 class AnalysisReport:
@@ -40,6 +42,17 @@ class AnalysisReport:
             if not result.passed
         )
     
+    @property
+    def quality_score(self) -> int:
+        score = 0
+
+        for result in self.validation_results:
+            weight = VALIDATION_WEIGHTS.get(result.name, 0)
+
+            if result.passed:
+                score += weight
+
+        return score
 
     def get_result(self, name: str) -> ValidationResult | None:
         for result in self.validation_results:
