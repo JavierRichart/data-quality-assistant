@@ -53,6 +53,32 @@ class AnalysisReport:
                 score += weight
 
         return score
+    
+    @property
+    def quality_level(self) -> str:
+        if self.quality_score >= 90:
+            return "Excelente"
+        
+        if self.quality_score >= 75:
+            return "Buena"
+        
+        if self.quality_score >= 50:
+            return "Mejorable"
+        
+        return "Baja"
+    
+    @property
+    def quality_icon(self) -> str:
+        if self.quality_score >= 90:
+            return "🟢"
+
+        if self.quality_score >= 75:
+            return "🟡"
+
+        if self.quality_score >= 50:
+            return "🟠"
+
+        return "🔴"
 
     def get_result(self, name: str) -> ValidationResult | None:
         for result in self.validation_results:

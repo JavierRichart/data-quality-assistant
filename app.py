@@ -53,6 +53,11 @@ if uploaded_file is not None:
         st.subheader("Columnas detectadas")
         st.write(list(df.columns))
 
+        st.info(
+            f"{report.quality_icon}"
+            f"Nivel de calidad: **{report.quality_level}"
+        )
+
     except Exception as error:
         st.error(
             f"No se ha podido leer el archivo: {error}"
