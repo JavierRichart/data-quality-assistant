@@ -105,3 +105,50 @@ class DataTypesValidator(BaseValidator):
             passed=not invalid_types,
             details=invalid_types,
         )
+    
+
+class DateFormatValidator(BaseValidator):
+    def __init__(
+        self,
+        date_columns: list[str],
+        date_format: str = "%d-%m-%Y",
+    ):
+        self.date_columns = date_columns
+        self.date_format = date_format
+
+    def validate(self, dataframe: pd.DataFrame) -> ValidationResult:
+        invalid_dates = {}
+
+        for column in self.date_columns:
+            if column not in dataframe.columns:
+                continue
+
+            column_data = dataframe[column]
+
+            converted_dates = pd.to_datetime(
+                column_data,
+                format=self.date_format,
+                errors="coerce",
+            )
+
+            invalid_mask = (
+                converted_dates.isna()
+                & column_data.notna()
+            )
+
+            if invalid_mask.any():
+                invalid_dates[column] = {
+                    "expected_format": self.date_format,
+                    "invalid_rows": dataframe.index[
+                        invalid_mask
+                    ].tolist(),
+                    "invalid_values": column_data[
+                        invalid_mask
+                    ].tolist(),
+                }
+
+        return ValidationResult(
+            name="date_format",
+            passed=not invalid_dates,
+            details=invalid_dates,
+        )

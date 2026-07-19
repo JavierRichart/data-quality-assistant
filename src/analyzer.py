@@ -9,6 +9,7 @@ from src.validators import (
     DuplicateColumnsValidator,
     NullValuesValidator,
     DataTypesValidator,
+    DateFormatValidator,
 )
 
 @dataclass
@@ -63,7 +64,12 @@ def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
                 "ciudad": "text",
                 "edad": "number",
             }
-        )
+        ),
+        DateFormatValidator(
+            date_columns=[
+                "fecha_alta",
+            ],
+        ),
     ]
 
     results = [
