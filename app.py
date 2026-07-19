@@ -27,6 +27,7 @@ if uploaded_file is not None:
         missing_columns = report.get_result("required_columns")
         null_values = report.get_result("null_data")
         data_types = report.get_result("data_types")
+        date_format = report.get_result("date_format")
 
         duplicate_details = (
             duplicate_columns.details
@@ -53,6 +54,12 @@ if uploaded_file is not None:
         data_type_details = (
             data_types.details
             if data_types is not None
+            else {}
+        )
+
+        date_format_details = (
+            date_format.details
+            if date_format is not None
             else {}
         )
 
@@ -118,6 +125,34 @@ if uploaded_file is not None:
 
                 st.divider()
 
+        if date_format_details:
+            st.error(
+                "Se han detectado fechas con formato incorrecto."
+            )
+
+            for column, error_details in date_format_details.items():
+                st.write(f"**Columna:** `{column}`")
+                st.write(
+                    "Formato esperado: "
+                    f"`{error_details['expected_format']}`"
+                )
+
+                rows = [
+                    row + 2
+                    for row in error_details["invalid_rows"]
+                ]
+
+                st.write(
+                    f"Filas del archivo con errores: `{rows}`"
+                )
+
+                st.write(
+                    "Valores incorrectos:",
+                    error_details["invalid_values"],
+                )
+
+                st.divider()
+
         if report.is_valid:
             st.success(
                 "El archivo ha superado todas las validaciones."
@@ -128,13 +163,21 @@ if uploaded_file is not None:
 
         col1.metric("Filas", report.total_rows)
         col2.metric("Columnas", report.total_columns)
-        col3.metric("Validaciones fallidas", report.error_count)
+        col3.metric(
+            "Validaciones fallidas",
+            report.error_count,
+        )
 
         st.subheader("Vista previa")
-        st.dataframe(df.head(20), use_container_width=True)
+        st.dataframe(
+            df.head(20),
+            use_container_width=True,
+        )
 
         st.subheader("Columnas detectadas")
         st.write(list(df.columns))
 
     except Exception as error:
-        st.error(f"No se ha podido leer el archivo: {error}")
+        st.error(
+            f"No se ha podido leer el archivo: {error}"
+        )
