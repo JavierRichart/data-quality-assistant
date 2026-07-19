@@ -152,3 +152,24 @@ class DateFormatValidator(BaseValidator):
             passed=not invalid_dates,
             details=invalid_dates,
         )
+    
+    
+class DuplicateRowsValidator(BaseValidator):
+    def validate(
+        self,
+        dataframe: pd.DataFrame,
+    ) -> ValidationResult:
+        duplicate_mask = dataframe.duplicated()
+
+        duplicate_rows = dataframe.index[
+            duplicate_mask
+        ].tolist()
+
+        return ValidationResult(
+            name="duplicate_rows",
+            passed=not duplicate_rows,
+            details={
+                "duplicate_rows": duplicate_rows,
+                "count": len(duplicate_rows),
+            },
+        )
