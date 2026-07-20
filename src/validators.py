@@ -173,3 +173,58 @@ class DuplicateRowsValidator(BaseValidator):
                 "count": len(duplicate_rows),
             },
         )
+    
+    
+class NumericRangeValidator(BaseValidator):
+    def __init__(
+        self,
+        ranges: dict[str, tuple[float | None, float | None]],
+    ):
+        self.ranges = ranges
+
+    def validate(
+        self,
+        dataframe: pd.DataFrame,
+    ) -> ValidationResult:
+        invalid_ranges = {}
+
+        for column, limits in self.ranges.items():
+            if column not in dataframe.columns:
+                continue
+
+            minimum, maximum = limits
+
+            numeric_data = pd.to_numeric(
+                dataframe[column],
+                errors="coerce",
+            )
+
+            invalid_mask = pd.Series(
+                False,
+                index=dataframe.index,
+            )
+
+            if minimum is not None:
+                invalid_mask |= numeric_data < minimum
+
+            if maximum is not None:
+                invalid_mask |= numeric_data > maximum
+
+            if invalid_mask.any():
+                invalid_ranges[column] = {
+                    "minimum": minimum,
+                    "maximum": maximum,
+                    "invalid_rows": dataframe.index[
+                        invalid_mask
+                    ].tolist(),
+                    "invalid_values": dataframe.loc[
+                        invalid_mask,
+                        column,
+                    ].tolist(),
+                }
+
+        return ValidationResult(
+            name="numeric_range",
+            passed=not invalid_ranges,
+            details=invalid_ranges,
+        )
