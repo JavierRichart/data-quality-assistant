@@ -8,6 +8,7 @@ from src.validation_result import ValidationResult
 from src.validators import (
     RequiredColumnsValidator,
     DuplicateColumnsValidator,
+    DuplicateRowsValidator,
     NullValuesValidator,
     DataTypesValidator,
     DateFormatValidator,
@@ -109,6 +110,7 @@ def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
                 "fecha_alta",
             ],
         ),
+        DuplicateRowsValidator(),
     ]
 
     results = [

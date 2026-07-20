@@ -123,10 +123,37 @@ def render_date_format(
         st.divider()
 
 
+def render_duplicate_rows(
+    result: ValidationResult | None,
+) -> None:
+    
+    if result is None or result.passed:
+        return
+
+    count = result.details["count"]
+    rows = [
+        row + 2
+        for row in result.details["duplicate_rows"]
+    ]
+
+    st.error(
+        f"Se han encontrado "
+        f"{count} filas duplicadas."
+    )
+
+    st.write(
+        f"Filas: {rows}"
+    )
+
+
 def render_validation_report(
     report: AnalysisReport,
 ) -> None:
-    st.subheader("Validación de columnas")
+    st.subheader("Validación de datos")
+
+    duplicate_rows = report.get_result(
+        "duplicate_rows"
+    )
 
     render_duplicate_columns(
         report.get_result("duplicate_columns")
@@ -146,6 +173,10 @@ def render_validation_report(
 
     render_date_format(
         report.get_result("date_format")
+    )
+
+    render_duplicate_rows(
+        report.get_result("duplicate_rows"),
     )
 
     if report.is_valid:
