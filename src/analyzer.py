@@ -12,6 +12,7 @@ from src.validators import (
     NullValuesValidator,
     DataTypesValidator,
     DateFormatValidator,
+    RequiredColumnsValidator,
 )
 
 
@@ -110,7 +111,13 @@ def analyze_dataframe(df: pd.DataFrame) -> AnalysisReport:
                 "fecha_alta",
             ],
         ),
-        DuplicateRowsValidator(),
+        DuplicateRowsValidator(
+        ),
+        RequiredColumnsValidator(
+            ranges={
+                "edad": (0, 120)
+            }
+        )
     ]
 
     results = [

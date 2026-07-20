@@ -179,7 +179,46 @@ def render_validation_report(
         report.get_result("duplicate_rows"),
     )
 
+    render_numeric_range(
+        report.get_result("numeric_range")
+    )
+
     if report.is_valid:
         st.success(
             "El archivo ha superado todas las validaciones."
         )
+
+
+def render_numeric_range(
+    result: ValidationResult | None,
+) -> None:
+    if result is None or result.passed:
+        return
+
+    st.error(
+        "Se han detectado valores fuera del rango permitido."
+    )
+
+    for column, error_details in result.details.items():
+        st.write(f"**Columna:** `{column}`")
+        st.write(
+            "Rango permitido: "
+            f"`{error_details['minimum']}` - "
+            f"`{error_details['maximum']}`"
+        )
+
+        rows = [
+            row + 2
+            for row in error_details["invalid_rows"]
+        ]
+
+        st.write(
+            f"Filas del archivo con errores: `{rows}`"
+        )
+
+        st.write(
+            "Valores incorrectos:",
+            error_details["invalid_values"],
+        )
+
+        st.divider()
