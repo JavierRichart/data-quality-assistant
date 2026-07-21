@@ -150,8 +150,10 @@ class DateFormatValidator(BaseValidator):
         return ValidationResult(
             name="date_format",
             passed=not invalid_dates,
-            details=invalid_dates,
-        )
+            details={
+                "invalid_dates": invalid_dates,
+            },
+)
     
     
 class DuplicateRowsValidator(BaseValidator):
