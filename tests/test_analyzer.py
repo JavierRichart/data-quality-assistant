@@ -33,3 +33,54 @@ def test_analyze_dataframe_returns_valid_report():
     assert report.quality_score == 100
     assert report.quality_level == "Excelente"
     assert report.quality_icon == "🟢"
+
+
+def test_analyze_dataframe_returns_invalid_report():
+    dataframe = pd.DataFrame(
+        {
+            "Nombre": ["Ana", "Luis", "Luis"],
+            "Ciudad": ["Madrid", "Sevilla", "Sevilla"],
+            "Edad": [150, 40, 40],
+            "Fecha Alta": [
+                "fecha_invalida",
+                "16-07-2026",
+                "16-07-2026",
+            ],
+        }
+    )
+
+    report = analyze_dataframe(dataframe)
+
+    assert report.is_valid is False
+    assert report.error_count == 3
+
+    assert report.get_result("duplicate_rows").passed is False
+    assert report.get_result("date_format").passed is False
+    assert report.get_result("numeric_range").passed is False
+
+    assert report.quality_score == 65
+    assert report.quality_level == "Mejorable"
+    assert report.quality_icon == "🟠"
+
+
+def test_analyze_dataframe_handles_optional_date_column():
+    dataframe = pd.DataFrame(
+        {
+            "nombre": ["Ana", "Luis"],
+            "ciudad": ["Madrid", "Sevilla"],
+            "edad": [30, 40],
+        }
+    )
+
+    report = analyze_dataframe(dataframe)
+
+    date_result = report.get_result("date_format")
+
+    assert date_result is not None
+    assert date_result.passed is True
+    assert date_result.details == {
+        "invalid_dates": {},
+    }
+
+    assert report.is_valid is True
+    assert report.quality_score == 100
