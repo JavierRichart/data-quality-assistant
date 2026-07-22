@@ -41,3 +41,22 @@ def test_passes_when_there_are_no_null_values():
         "ciudad": 0,
         "edad": 0,
     }
+
+def test_detects_columns_with_all_null_values():
+    dataframe = pd.DataFrame(
+        {
+            "nombre": [None, None],
+            "ciudad": [None, None],
+            "edad": [None, None],
+        }
+    )
+
+    validator = NullValuesValidator()
+    result = validator.validate(dataframe)
+
+    assert result.passed is False
+    assert result.details == {
+        "nombre": 2,
+        "ciudad": 2,
+        "edad": 2,
+    }

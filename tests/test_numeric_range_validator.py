@@ -42,3 +42,22 @@ def test_passes_when_values_are_inside_numeric_range():
 
     assert result.passed is True
     assert result.details == {}
+
+
+def test_accepts_values_equal_to_range_limits():
+    dataframe = pd.DataFrame(
+        {
+            "edad": [0, 120],
+        }
+    )
+
+    validator = NumericRangeValidator(
+        ranges={
+            "edad": (0, 120),
+        }
+    )
+
+    result = validator.validate(dataframe)
+
+    assert result.passed is True
+    assert result.details == {}

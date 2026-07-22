@@ -52,3 +52,26 @@ def test_passes_when_date_formats_are_valid():
     assert result.details == {
         "invalid_dates": {},
     }
+
+def test_ignores_null_date_values():
+    dataframe = pd.DataFrame(
+        {
+            "fecha": [
+                "15-07-2026",
+                None,
+                "17-07-2026",
+            ],
+        }
+    )
+
+    validator = DateFormatValidator(
+        date_columns=["fecha"],
+        date_format="%d-%m-%Y",
+    )
+
+    result = validator.validate(dataframe)
+
+    assert result.passed is True
+    assert result.details == {
+        "invalid_dates": {},
+    }

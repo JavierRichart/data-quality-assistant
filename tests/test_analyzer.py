@@ -84,3 +84,23 @@ def test_analyze_dataframe_handles_optional_date_column():
 
     assert report.is_valid is True
     assert report.quality_score == 100
+
+
+def test_analyze_empty_dataframe():
+    dataframe = pd.DataFrame()
+
+    report = analyze_dataframe(dataframe)
+
+    assert report.total_rows == 0
+    assert report.total_columns == 0
+    assert report.is_valid is False
+
+    required_result = report.get_result("required_columns")
+
+    assert required_result is not None
+    assert required_result.passed is False
+    assert required_result.details == [
+        "nombre",
+        "ciudad",
+        "edad",
+    ]
