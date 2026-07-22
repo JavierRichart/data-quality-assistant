@@ -1,8 +1,10 @@
 import streamlit as st
+import json
 
 from src.analyzer import analyze_dataframe
 from src.loader import load_file
 from src.report_renderer import render_validation_report
+from src.report_exporter import report_to_dict
 
 
 st.set_page_config(
@@ -43,6 +45,21 @@ if uploaded_file is not None:
             "Calidad de los datos",
             f"{report.quality_score}/100",
         )
+
+        report_data = report_to_dict(report)
+
+        report_json = json.dumps(
+            report_data,
+            ensure_ascii=False,
+            indent=4,
+        )
+
+        st.download_button(
+            label="Descargar informe JSON",
+            data=report_json,
+            file_name="analysis_report.json",
+            mime="application/json"
+        )
         
         st.subheader("Vista previa")
         st.dataframe(
@@ -54,8 +71,8 @@ if uploaded_file is not None:
         st.write(list(df.columns))
 
         st.info(
-            f"{report.quality_icon}"
-            f"Nivel de calidad: **{report.quality_level}"
+            f"{report.quality_icon} "
+            f"Nivel de calidad: **{report.quality_level}**"
         )
 
     except Exception as error:
